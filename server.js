@@ -48,3 +48,13 @@ app.listen(port, () => {
   console.log(`app listening on ${host}:${port}`)
 })
 
+//404 handler
+app.use((req, res, next) => {
+  res.status(404).render("errors/error", {title: "Page Not Found", message: "Sorry, this page does not exist."});
+});
+
+//500 handler
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).render("errors/error", { title: "Server Error", message: "Something went wrong with the server."});
+});

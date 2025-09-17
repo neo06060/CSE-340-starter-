@@ -10,5 +10,7 @@ router.use("/images", express.static(__dirname + "public/images"));
 
 module.exports = router;
 
-
-
+router.get("/trigger-error", (req, res, next) => {
+    //error is forced
+    next(new Error("Intentional 500 error was triggered"));
+});
