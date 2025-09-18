@@ -14,8 +14,6 @@ const baseController = require("./controllers/baseController")
 const inventoryRoute = require("./routes/inventoryRoute")
 
 
-
-
 /* ***********************
  * View Engine and Templates
  *************************/
