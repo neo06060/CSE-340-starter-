@@ -19,19 +19,23 @@ const accountRoute = require("./routes/accountRoute")
 const bodyParser = require("body-parser")
 const flash = require("connect-flash")
 const messages = require("express-messages")
+const cookieParser = require("cookie-parser")
+const utilities = require ("./utilities")
+
 
 /* ***********************
  * View Engine and Templates
  *************************/
 app.set("view engine", "ejs")
 app.use(expressLayouts)
-app.set("layout", "./layouts/layout") // not at views root
+app.set("layout", "./layouts/layout")
 
 /* ***********************
  * Middleware
  *************************/
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
+app.use(cookieParser())
 
 // Session configuration
 app.use(session({
@@ -51,6 +55,8 @@ app.use(function(req, res, next) {
   res.locals.messages = messages(req, res)
   next()
 })
+
+app.use(utilities.checkJWTToken)
 
 /* ***********************
  * Routes

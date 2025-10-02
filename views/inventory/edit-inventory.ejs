@@ -15,9 +15,13 @@
       </ul>
     <% } %>
 
-    <form action="/inv/add-inventory" method="post" class="inventory-form">
+    <!-- Edit Inventory Form -->
+    <form id="updateForm" action="/inv/update" method="post" class="inventory-form">
+      <!-- Hidden input to keep track of which vehicle is being updated -->
+      <input type="hidden" name="inv_id" value="<%= inv_id %>">
+
       <label for="classification_id">Classification</label>
-      <%- classificationList %>
+      <%- classificationSelect %>
 
       <label for="inv_make">Make</label>
       <input type="text" id="inv_make" name="inv_make" value="<%= inv_make %>" required>
@@ -46,8 +50,10 @@
       <label for="inv_thumbnail">Thumbnail Path</label>
       <input type="text" id="inv_thumbnail" name="inv_thumbnail" value="<%= inv_thumbnail %>" required>
 
-      <button type="submit">Add Inventory</button>
+      <button type="submit" disabled>Update Vehicle</button>
       <p><a href="/account">Back to Management</a></p>
     </form>
   </div>
 </main>
+
+<script src="/js/inv-update.js"></script>

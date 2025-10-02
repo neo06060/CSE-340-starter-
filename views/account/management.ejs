@@ -1,0 +1,25 @@
+<main>
+  <h1><%= title %></h1>
+
+  <!-- Flash messages -->
+  <%- messages() %>
+  <p><%= message %></p>
+
+  <!-- Links to add -->
+  <a href="/inv/add-classification">Add New Classification</a><br>
+  <a href="/inv/add-inventory">Add New Vehicle</a>
+
+  <h2>Manage Inventory</h2>
+  <p>Choose a classification to see those vehicles.</p>
+
+  <!-- Dropdown list -->
+  <%- classificationSelect %>
+
+  <!-- Table where JS will inject data -->
+  <table id="inventoryDisplay"></table>
+
+  <noscript>JavaScript must be enabled to use this page.</noscript>
+
+  <!-- Attach JS -->
+  <script src="/js/inventory.js"></script>
+</main>

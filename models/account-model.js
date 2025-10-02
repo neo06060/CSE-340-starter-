@@ -23,16 +23,16 @@ async function registerAccount(account_firstname, account_lastname, account_emai
     throw error
   }
 }
-async function getUserByEmail(account_email) {
+async function getAccountByEmail(account_email) {
   try {
     const sql = "SELECT * FROM account WHERE account_email = $1"
     const result = await pool.query(sql, [account_email])
     return result.rows[0] // returns undefined if no user found
   } catch (error) {
-    console.error("Database error in getUserByEmail:", error)
+    console.error("Database error in getAccountByEmail:", error)
     throw error
   }
 }
 
-module.exports = { registerAccount, getUserByEmail }
+module.exports = { registerAccount, getAccountByEmail }
 

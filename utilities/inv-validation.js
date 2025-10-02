@@ -27,7 +27,9 @@ validate.inventoryRules = () => [
   body("inv_thumbnail").trim().notEmpty().withMessage("Thumbnail path is required"),
 ];
 
-// Error handler
+/* ***************************
+ *  Error handler for Add forms
+ * ************************** */
 validate.checkInvData = async (req, res, next) => {
   const errorsResult = validationResult(req);
   if (!errorsResult.isEmpty()) {
@@ -62,6 +64,37 @@ validate.checkInvData = async (req, res, next) => {
         classification_id: req.body.classification_id || "",
       });
     }
+  }
+  next();
+};
+
+/* ***************************
+ *  Error handler for Update forms
+ * ************************** */
+validate.checkUpdateData = async (req, res, next) => {
+  const errorsResult = validationResult(req);
+  if (!errorsResult.isEmpty()) {
+    const errors = errorsResult.array();
+    const nav = await utilities.getNav();
+    const classificationList = await utilities.buildClassificationList(req.body.classification_id || null);
+
+    return res.status(400).render("inventory/edit-inventory", {
+      title: `Edit ${req.body.inv_make} ${req.body.inv_model}`,
+      nav,
+      errors,
+      classificationSelect: classificationList,
+      inv_id: req.body.inv_id,
+      inv_make: req.body.inv_make || "",
+      inv_model: req.body.inv_model || "",
+      inv_year: req.body.inv_year || "",
+      inv_description: req.body.inv_description || "",
+      inv_price: req.body.inv_price || "",
+      inv_miles: req.body.inv_miles || "",
+      inv_color: req.body.inv_color || "",
+      inv_image: req.body.inv_image || "",
+      inv_thumbnail: req.body.inv_thumbnail || "",
+      classification_id: req.body.classification_id || "",
+    });
   }
   next();
 };

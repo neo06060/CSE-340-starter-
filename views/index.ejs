@@ -1,5 +1,9 @@
 <main>
   <h1>Welcome to CSE Motors!</h1>
+
+  <% if (welcomeMessage) { %>
+    <p class="welcome"><%= welcomeMessage %></p>
+  <% } %>
   
   <%- messages() %>
 
@@ -49,5 +53,3 @@
     </div>
   </section>
 </main>
-
-

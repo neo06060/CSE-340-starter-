@@ -3,6 +3,7 @@ const express = require("express");
 const router = new express.Router();
 const invController = require("../controllers/invController");
 const invValidate = require("../utilities/inv-validation");
+const utilities = require("../utilities/");
 
 // Task 1: Management view
 router.get("/", invController.buildManagement);
@@ -23,6 +24,26 @@ router.post(
   invValidate.inventoryRules(),
   invValidate.checkInvData,
   invController.addInventory
+);
+
+// Update Inventory
+router.post(
+  "/update",
+  invValidate.inventoryRules(),
+  invValidate.checkUpdateData,
+  utilities.handleErrors(invController.updateInventory)
+);
+
+// JSON route for inventory
+router.get(
+  "/getInventory/:classification_id",
+  utilities.handleErrors(invController.getInventoryJSON)
+);
+
+// Edit inventory view
+router.get(
+  "/edit/:inv_id",
+  utilities.handleErrors(invController.editInventoryView)
 );
 
 // Existing routes
