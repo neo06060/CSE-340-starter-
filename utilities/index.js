@@ -140,20 +140,24 @@ Util.checkLogin = (req, res, next) => {
 
 /* ****************************************
  *  Check Employee/Admin (authorization)
- *  Allows only account_type Employee or Admin
+ *  Allows only account_type employee or admin
  * ************************************ */
 Util.checkEmployee = (req, res, next) => {
   const accountData = res.locals.accountData || {};
-  const accountType = accountData.account_type || "Client";
+  const accountType = accountData.account_type || "client";
 
-  if (accountType === "Employee" || accountType === "Admin") {
+  if (accountType === "employee" || accountType === "admin") {
     return next();
   }
 
   // not authorized
-  req.flash("notice", "You do not have permission to access that resource. Please log in with an authorized account.");
+  req.flash(
+    "notice",
+    "You do not have permission to access that resource. Please log in with an authorized account."
+  );
   return res.redirect("/account/login");
 };
+
 
 /* **************************************
 * Error handling wrapper

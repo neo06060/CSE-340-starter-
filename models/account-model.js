@@ -1,8 +1,8 @@
-/* *****************************
-*   Register new account
-* *************************** */
 const pool = require("../database")
 
+/* *****************************
+ *   Register new client account
+ * *************************** */
 async function registerAccount(account_firstname, account_lastname, account_email, account_password) {
   try {
     const sql = `
@@ -23,18 +23,48 @@ async function registerAccount(account_firstname, account_lastname, account_emai
     throw error
   }
 }
+
+/* *****************************
+ *   Register new admin account
+ * *************************** */
+async function registerAdminAccount({ account_firstname, account_lastname, account_email, account_password }) {
+  try {
+    const sql = `
+      INSERT INTO account
+        (account_firstname, account_lastname, account_email, account_password, account_type)
+      VALUES ($1, $2, $3, $4, 'admin')
+      RETURNING *
+    `
+    const result = await pool.query(sql, [
+      account_firstname,
+      account_lastname,
+      account_email,
+      account_password
+    ])
+    return result
+  } catch (error) {
+    console.error("Database error in registerAdminAccount:", error)
+    throw error
+  }
+}
+
+/* *****************************
+ *   Get account by email
+ * *************************** */
 async function getAccountByEmail(account_email) {
   try {
     const sql = "SELECT * FROM account WHERE account_email = $1"
     const result = await pool.query(sql, [account_email])
-    return result.rows[0] // returns undefined if no user found
+    return result.rows[0]
   } catch (error) {
     console.error("Database error in getAccountByEmail:", error)
     throw error
   }
 }
 
-// get account by id
+/* *****************************
+ *   Get account by ID
+ * *************************** */
 async function getAccountById(account_id) {
   try {
     const sql = "SELECT * FROM account WHERE account_id = $1";
@@ -46,7 +76,9 @@ async function getAccountById(account_id) {
   }
 }
 
-// update account info (firstname, lastname, email) by account_id
+/* *****************************
+ *   Update account info
+ * *************************** */
 async function updateAccountInfo(account_id, account_firstname, account_lastname, account_email) {
   try {
     const sql =
@@ -62,7 +94,9 @@ async function updateAccountInfo(account_id, account_firstname, account_lastname
   }
 }
 
-// update password by account_id (password is expected hashed before calling)
+/* *****************************
+ *   Update password
+ * *************************** */
 async function updatePassword(account_id, hashedPassword) {
   try {
     const sql = "UPDATE account SET account_password = $1 WHERE account_id = $2 RETURNING account_id";
@@ -74,5 +108,26 @@ async function updatePassword(account_id, hashedPassword) {
   }
 }
 
-module.exports = { registerAccount, getAccountByEmail, getAccountById, updateAccountInfo, updatePassword }
+/* *******************************
+ * Check if an email already exists
+ ******************************** */
+async function checkExistingEmail(account_email) {
+  try {
+    const sql = "SELECT account_email FROM public.account WHERE account_email = $1";
+    const result = await pool.query(sql, [account_email]);
+    return result.rows.length > 0;
+  } catch (error) {
+    console.error("Error checking existing email:", error);
+    throw error;
+  }
+}
 
+module.exports = {
+  registerAccount,
+  registerAdminAccount,
+  getAccountByEmail,
+  getAccountById,
+  updateAccountInfo,
+  updatePassword,
+  checkExistingEmail
+}

@@ -4,6 +4,52 @@ const jwt = require("jsonwebtoken")
 const utilities = require("../utilities/")
 require("dotenv").config()
 
+
+// Show the admin registration form
+async function buildAdminRegister(req, res, next) {
+  try {
+    const nav = await require("../utilities").getNav();
+    res.render("account/register-admin", {
+      title: "Register Admin",
+      nav,
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+// Process admin registration
+async function registerAdmin(req, res, next) {
+  try {
+    const accountModel = require("../models/account-model");
+    const { account_firstname, account_lastname, account_email, account_password } = req.body;
+    
+    // Check if email already exists
+    const emailExists = await accountModel.checkExistingEmail(account_email);
+    if (emailExists) {
+      req.flash("notice", "Email is already registered.");
+      return res.redirect("/account/register-admin");
+    }
+
+    // Hash password before storing
+    const bcrypt = require("bcryptjs");
+    const hashedPassword = await bcrypt.hash(account_password, 10);
+
+    // Call model to insert account with admin type
+    await accountModel.registerAdminAccount({
+      account_firstname,
+      account_lastname,
+      account_email,
+      account_password: hashedPassword,
+      account_type: "Admin",
+    });
+
+    res.redirect("/account/login");
+  } catch (error) {
+    next(error);
+  }
+}
+
 // Deliver login view
 async function buildLogin(req, res) {
   let nav = await utilities.getNav()
@@ -221,4 +267,4 @@ async function accountLogout(req, res, next) {
   }
 }
 
-module.exports = { buildLogin, buildRegister, registerAccount, accountLogin, buildAccountManagement, buildAccountEdit, updateAccountInfo, changePassword, accountLogout }
+module.exports = { buildLogin, buildRegister, registerAccount, accountLogin, buildAccountManagement, buildAccountEdit, updateAccountInfo, changePassword, accountLogout, buildAdminRegister, registerAdmin }

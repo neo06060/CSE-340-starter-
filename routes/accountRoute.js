@@ -3,11 +3,18 @@ const express = require("express")
 const router = express.Router()
 const utilities = require("../utilities")
 const accountController = require("../controllers/accountController")
+const validate = require("../utilities/account-validation");
 
 router.get(
   "/login",
   utilities.handleErrors(accountController.buildLogin)
 )
+
+// Display admin registration form
+router.get("/register-admin", accountController.buildAdminRegister);
+
+// Process admin registration
+router.post("/register-admin", validate.registrationRules(), validate.checkRegData, accountController.registerAdmin);
 
 router.post(
   "/login",
@@ -20,6 +27,8 @@ router.get(
   "/register",
   utilities.handleErrors(accountController.buildRegister)
 )
+
+
 
 // Account Management - require login
 router.get("/", utilities.checkLogin, utilities.handleErrors(accountController.buildAccountManagement));
