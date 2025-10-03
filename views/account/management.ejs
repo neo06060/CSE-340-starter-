@@ -5,9 +5,11 @@
   <%- messages() %>
   <p><%= message %></p>
 
-  <!-- Links to add -->
-  <a href="/inv/add-classification">Add New Classification</a><br>
-  <a href="/inv/add-inventory">Add New Vehicle</a>
+  <!-- Links to add (only visible if Employee or Admin) -->
+  <% if (accountData && (accountData.account_type === 'Employee' || accountData.account_type === 'Admin')) { %>
+    <a href="/inv/add-classification">Add New Classification</a><br>
+    <a href="/inv/add-inventory">Add New Vehicle</a>
+  <% } %>
 
   <h2>Manage Inventory</h2>
   <p>Choose a classification to see those vehicles.</p>
@@ -22,4 +24,18 @@
 
   <!-- Attach JS -->
   <script src="/js/inventory.js"></script>
+
+  <!-- Account-specific greeting -->
+  <% if (accountData) { %>
+    <h2>Welcome <%= accountData.account_firstname %>!</h2>
+
+    <!-- Update account link -->
+    <p><a href="/account/edit/<%= accountData.account_id %>">Update Account Information</a></p>
+
+    <!-- Inventory link only for Employee or Admin -->
+    <% if (accountData.account_type === 'Employee' || accountData.account_type === 'Admin') { %>
+      <h3>Inventory Management</h3>
+      <p><a href="/inv/">Manage Inventory</a></p>
+    <% } %>
+  <% } %>
 </main>

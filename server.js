@@ -20,8 +20,7 @@ const bodyParser = require("body-parser")
 const flash = require("connect-flash")
 const messages = require("express-messages")
 const cookieParser = require("cookie-parser")
-const utilities = require ("./utilities")
-
+const utilities = require("./utilities")
 
 /* ***********************
  * View Engine and Templates
@@ -49,6 +48,13 @@ app.use(session({
   name: "sessionId",
 }))
 
+// Make session data available in views
+app.use((req, res, next) => {
+  res.locals.loggedin = req.session.loggedin || false
+  res.locals.accountData = req.session.accountData || null
+  next()
+})
+
 // Flash messages
 app.use(flash())
 app.use(function(req, res, next) {
@@ -56,6 +62,7 @@ app.use(function(req, res, next) {
   next()
 })
 
+// JWT check
 app.use(utilities.checkJWTToken)
 
 /* ***********************

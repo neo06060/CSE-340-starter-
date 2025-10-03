@@ -132,12 +132,28 @@ Util.buildVehicleDetail = async function (vehicle) {
  * ************************************ */
 Util.checkLogin = (req, res, next) => {
   if (res.locals.loggedin) {
-    next() // user is logged in, continue
-  } else {
-    req.flash("notice", "Please log in.")
-    return res.redirect("/account/login") // redirect to login if not
+    return next();
   }
-}
+  req.flash("notice", "Please log in.");
+  return res.redirect("/account/login");
+};
+
+/* ****************************************
+ *  Check Employee/Admin (authorization)
+ *  Allows only account_type Employee or Admin
+ * ************************************ */
+Util.checkEmployee = (req, res, next) => {
+  const accountData = res.locals.accountData || {};
+  const accountType = accountData.account_type || "Client";
+
+  if (accountType === "Employee" || accountType === "Admin") {
+    return next();
+  }
+
+  // not authorized
+  req.flash("notice", "You do not have permission to access that resource. Please log in with an authorized account.");
+  return res.redirect("/account/login");
+};
 
 /* **************************************
 * Error handling wrapper

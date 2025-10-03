@@ -21,6 +21,37 @@ router.get(
   utilities.handleErrors(accountController.buildRegister)
 )
 
+// Account Management - require login
+router.get("/", utilities.checkLogin, utilities.handleErrors(accountController.buildAccountManagement));
+
+// Account edit (GET)
+router.get(
+  "/edit/:account_id",
+  utilities.checkLogin,
+  utilities.handleErrors(accountController.buildAccountEdit)
+);
+
+// Account update (POST)
+router.post(
+  "/update",
+  utilities.checkLogin,
+  regValidate.updateAccountRules(), // new validation set (see below)
+  regValidate.checkUpdateData,
+  utilities.handleErrors(accountController.updateAccountInfo)
+);
+
+// Password change (POST)
+router.post(
+  "/password",
+  utilities.checkLogin,
+  regValidate.passwordRules(), // reuse or implement rules for password
+  regValidate.checkPasswordData,
+  utilities.handleErrors(accountController.changePassword)
+);
+
+// Logout
+router.get("/logout", utilities.handleErrors(accountController.accountLogout));
+
 // Process the registration data
 router.post(
   "/register",

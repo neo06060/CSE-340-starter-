@@ -1,4 +1,19 @@
 <header>
-  <h1>CSE Motors</h1>
-  <a href="/account/login">My Account</a>
+  <div class="header-top">
+    <h1 class="site-title">CSE Motors</h1>
+  </div>
+
+  <nav class="main-nav">
+    <ul>
+      <li><a href="/inv" title="Inventory">Inventory</a></li>
+
+      <% if (!loggedin) { %>
+        <li><a href="/account/register" title="Register">Register</a></li>
+        <li><a href="/account/login" title="Login">Login</a></li>
+      <% } else { %>
+        <li><a href="/account/" title="Account Management">Welcome <%= accountData.account_firstname %></a></li>
+        <li><a href="/account/logout" title="Logout">Logout</a></li>
+      <% } %>
+    </ul>
+  </nav>
 </header>

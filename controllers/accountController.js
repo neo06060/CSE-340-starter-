@@ -94,6 +94,131 @@ async function buildAccountManagement(req, res) {
   })
 }
 
+/* *******************************
+ *  Build Account Edit View (GET)
+ * ******************************* */
+async function buildAccountEdit(req, res, next) {
+  try {
+    const account_id = parseInt(req.params.account_id);
+    const nav = await utilities.getNav();
 
+    const accountData = await accountModel.getAccountById(account_id);
+    if (!accountData) {
+      req.flash("notice", "Account not found.");
+      return res.redirect("/account/");
+    }
 
-module.exports = { buildLogin, buildRegister, registerAccount, accountLogin, buildAccountManagement }
+    res.render("account/edit-account", {
+      title: "Update Account",
+      nav,
+      errors: null,
+      message: null,
+      account_id: accountData.account_id,
+      account_firstname: accountData.account_firstname,
+      account_lastname: accountData.account_lastname,
+      account_email: accountData.account_email,
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
+/* *******************************
+ *  Update Account Info (POST)
+ * ******************************* */
+async function updateAccountInfo(req, res, next) {
+  try {
+    const nav = await utilities.getNav();
+    const { account_id, account_firstname, account_lastname, account_email } = req.body;
+
+    const updateResult = await accountModel.updateAccountInfo(
+      account_id,
+      account_firstname,
+      account_lastname,
+      account_email
+    );
+
+    if (updateResult) {
+      // re-query updated account for display
+      const updated = await accountModel.getAccountById(account_id);
+      req.flash("notice", "Account information updated.");
+      // If the user's JWT needs to reflect new email/name, re-issue token:
+      // createToken & set cookie (optional). Here we'll re-render management with updated data.
+      res.locals.accountData = updated;
+      res.render("account/management", {
+        title: "Account Management",
+        nav,
+        errors: null,
+        message: `Your account was updated.`,
+      });
+    } else {
+      // show edit view with error
+      req.flash("notice", "Update failed.");
+      res.status(501).render("account/edit-account", {
+        title: "Update Account",
+        nav,
+        errors: null,
+        message: req.flash("notice"),
+        account_id,
+        account_firstname,
+        account_lastname,
+        account_email,
+      });
+    }
+  } catch (err) {
+    next(err);
+  }
+}
+
+/* *******************************
+ *  Change Password (POST)
+ * ******************************* */
+async function changePassword(req, res, next) {
+  try {
+    const nav = await utilities.getNav();
+    const { account_id, newPassword } = req.body;
+
+    // validate password was passed in by your validation middleware
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    const result = await accountModel.updatePassword(account_id, hashedPassword);
+
+    if (result) {
+      // success: go to management
+      const updated = await accountModel.getAccountById(account_id);
+      req.flash("notice", "Password updated successfully.");
+      res.locals.accountData = updated;
+      res.render("account/management", {
+        title: "Account Management",
+        nav,
+        errors: null,
+        message: "Password updated.",
+      });
+    } else {
+      req.flash("notice", "Password update failed.");
+      res.status(500).render("account/edit-account", {
+        title: "Update Account",
+        nav,
+        errors: null,
+        message: req.flash("notice"),
+        account_id,
+      });
+    }
+  } catch (err) {
+    next(err);
+  }
+}
+
+/* *******************************
+ *  Logout
+ * ******************************* */
+async function accountLogout(req, res, next) {
+  try {
+    res.clearCookie("jwt");
+    req.flash("notice", "You have been logged out.");
+    res.redirect("/");
+  } catch (err) {
+    next(err);
+  }
+}
+
+module.exports = { buildLogin, buildRegister, registerAccount, accountLogin, buildAccountManagement, buildAccountEdit, updateAccountInfo, changePassword, accountLogout }
