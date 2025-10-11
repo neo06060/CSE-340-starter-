@@ -95,6 +95,27 @@ async function updateAccountInfo(account_id, account_firstname, account_lastname
 }
 
 /* *****************************
+ *   Update account profile (phone, address, bio)
+ * *************************** */
+async function updateAccountProfile(account_id, account_phone, account_address, account_bio) {
+  try {
+    const sql = `
+      UPDATE account
+      SET account_phone = $1,
+          account_address = $2,
+          account_bio = $3
+      WHERE account_id = $4
+      RETURNING account_id, account_phone, account_address, account_bio;
+    `;
+    const result = await pool.query(sql, [account_phone, account_address, account_bio, account_id]);
+    return result.rows[0];
+  } catch (error) {
+    console.error("updateAccountProfile error:", error);
+    return null;
+  }
+}
+
+/* *****************************
  *   Update password
  * *************************** */
 async function updatePassword(account_id, hashedPassword) {
@@ -129,5 +150,6 @@ module.exports = {
   getAccountById,
   updateAccountInfo,
   updatePassword,
-  checkExistingEmail
+  checkExistingEmail,
+  updateAccountProfile
 }

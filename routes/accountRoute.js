@@ -29,7 +29,6 @@ router.get(
 )
 
 
-
 // Account Management - require login
 router.get("/", utilities.checkLogin, utilities.handleErrors(accountController.buildAccountManagement));
 

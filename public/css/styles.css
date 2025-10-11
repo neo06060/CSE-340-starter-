@@ -323,3 +323,48 @@ input:required:valid {
 .inventory-form button:hover {
   background: #0056b3;
 }
+/* Make the form container a nice rectangle */
+.form-container {
+  background-color: #f9f9f9;   /* Light gray background */
+  border: 1px solid #ddd;      /* Soft border */
+  border-radius: 12px;          /* Rounded corners */
+  padding: 30px 40px;           /* Spacing inside the box */
+  max-width: 500px;             /* Max width of the rectangle */
+  margin: 20px auto;            /* Center horizontally */
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Soft shadow */
+}
+
+/* Stack the labels and inputs vertically */
+.form-container form label {
+  display: block;
+  margin-top: 15px;
+  font-weight: 600;
+}
+
+.form-container form input,
+.form-container form textarea {
+  width: 100%;                /* Full width */
+  padding: 10px;
+  margin-top: 5px;            /* Space below label */
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+  box-sizing: border-box;     /* Include padding in width */
+}
+
+/* Style the submit button */
+.form-container form button {
+  margin-top: 20px;
+  padding: 12px 20px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.form-container form button:hover {
+  background-color: #0056b3;
+}

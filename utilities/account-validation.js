@@ -144,15 +144,19 @@ validate.checkUpdateData = async (req, res, next) => {
 
   if (!errors.isEmpty()) {
     const nav = await utilities.getNav();
-    res.render("account/update", {
-      errors,
-      title: "Update Account",
-      nav,
-      account_firstname,
-      account_lastname,
-      account_email,
-      account_id,
-    });
+res.render("account/edit-account", {
+  errors,
+  title: "Update Account",
+  nav,
+  account_firstname: account_firstname || "",
+  account_lastname: account_lastname || "",
+  account_email: account_email || "",
+  account_id,
+  account_phone: req.body.account_phone || "",
+  account_address: req.body.account_address || "",
+  account_bio: req.body.account_bio || "",
+  message: null,
+});
     return;
   }
   next();
@@ -183,13 +187,19 @@ validate.checkPasswordData = async (req, res, next) => {
 
   if (!errors.isEmpty()) {
     const nav = await utilities.getNav();
-    res.render("account/update", {
-      errors,
-      title: "Update Account",
-      nav,
-      account_id,
-    });
-    return;
+res.render("account/edit-account", {
+  errors,
+  title: "Update Account",
+  nav,
+  account_id,
+  account_firstname: req.body.account_firstname || "",
+  account_lastname: req.body.account_lastname || "",
+  account_email: req.body.account_email || "",
+  account_phone: req.body.account_phone || "",
+  account_address: req.body.account_address || "",
+  account_bio: req.body.account_bio || "",
+  message: null,
+});
   }
   next();
 };
